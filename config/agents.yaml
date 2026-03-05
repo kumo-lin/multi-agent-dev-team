@@ -1,0 +1,77 @@
+# Agent 配置
+
+agents:
+  director:
+    name: 项目总监
+    model: gpt-4
+    thinking: low
+    prompt: templates/prompts/director.txt
+    
+  pm:
+    name: 产品经理
+    model: gpt-4
+    thinking: medium
+    prompt: templates/prompts/pm.txt
+    
+  designer:
+    name: UXUI设计师
+    model: gpt-4
+    thinking: medium
+    prompt: templates/prompts/designer.txt
+    
+  backend:
+    name: 后端开发
+    model: gpt-4
+    thinking: medium
+    prompt: templates/prompts/backend.txt
+    
+  frontend:
+    name: 前端开发
+    model: gpt-4
+    thinking: medium
+    prompt: templates/prompts/frontend.txt
+    
+  qa:
+    name: 测试
+    model: gpt-4
+    thinking: low
+    prompt: templates/prompts/qa.txt
+
+# 工作流配置
+workflow:
+  # 默认流程
+  default:
+    - pm
+    - designer
+    - backend
+    - frontend
+    - qa
+  
+  # 跳过设计的流程
+  no_design:
+    - pm
+    - backend
+    - frontend
+    - qa
+  
+  # 仅后端
+  backend_only:
+    - pm
+    - backend
+    - qa
+
+# 通知配置
+notifications:
+  # 心跳检查间隔（分钟）
+  heartbeat_interval: 15
+  
+  # 超时提醒（分钟）
+  timeout_warning: 30
+  
+  # 主线程汇报级别
+  main_thread_level: milestone  # all, milestone, completion_only
+
+# 存储配置
+storage:
+  projects_dir: /home/node/.openclaw/workspace/projects
+  results_dir: /home/node/.openclaw/workspace/projects/{project}/results

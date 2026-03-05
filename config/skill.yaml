@@ -1,0 +1,116 @@
+# Multi-Agent Development Team Skill Configuration
+# 多 Agent 开发团队配置
+
+# Agent 角色定义
+agents:
+  director:
+    name: 项目总监
+    model: kimi/kimi-k2.5
+    thinking: low
+    prompt: templates/prompts/director.txt
+    description: 总协调人，接收需求、分配角色、汇报进度
+    
+  pm:
+    name: 产品经理
+    model: kimi/kimi-k2.5
+    thinking: medium
+    prompt: templates/prompts/pm.txt
+    description: 编写 PRD、拆解功能、定义验收标准
+    
+  designer:
+    name: UXUI设计师
+    model: kimi/kimi-k2.5
+    thinking: medium
+    prompt: templates/prompts/designer.txt
+    description: 界面设计、交互流程、视觉规范
+    
+  backend:
+    name: 后端开发
+    model: deepseek/deepseek-v3.2
+    thinking: medium
+    prompt: templates/prompts/backend.txt
+    description: API、数据库、业务逻辑
+    
+  frontend:
+    name: 前端开发
+    model: deepseek/deepseek-v3.2
+    thinking: medium
+    prompt: templates/prompts/frontend.txt
+    description: 页面实现、样式还原、交互逻辑
+    
+  qa:
+    name: 测试工程师
+    model: deepseek/deepseek-v3.2
+    thinking: low
+    prompt: templates/prompts/qa.txt
+    description: 测试用例、验收标准、质量保证
+
+# 工作流配置
+workflow:
+  # 完整流程（含设计）
+  full:
+    - pm
+    - designer
+    - backend
+    - frontend
+    - qa
+  
+  # 精简流程（跳过设计）
+  no_design:
+    - pm
+    - backend
+    - frontend
+    - qa
+  
+  # 仅后端
+  backend_only:
+    - pm
+    - backend
+    - qa
+
+# 频道绑定配置
+channel_binding:
+  # 启用频道绑定
+  enabled: true
+  
+  # 项目与频道映射存储
+  mapping_file: /home/node/.openclaw/workspace/.orchestrator/channel_projects.json
+  
+  # 绑定规则
+  rules:
+    # 创建项目的频道即为该项目的主频道
+    - when: project_created
+      bind: current_channel
+      persist: true
+    
+    # 所有项目相关沟通必须在绑定频道
+    - when: project_communication
+      validate: bound_channel
+      redirect: "请回到 #{channel} 频道继续讨论 {project}"
+
+# 项目存储配置
+storage:
+  projects_dir: /home/node/.openclaw/workspace/projects
+  orchestrator_dir: /home/node/.openclaw/workspace/.orchestrator
+  
+# 通知配置
+notifications:
+  # 心跳检查间隔（分钟）
+  heartbeat_interval: 15
+  
+  # 任务超时警告（分钟）
+  timeout_warning: 30
+  
+  # 主线程汇报级别：all, milestone, completion_only
+  main_thread_level: milestone
+
+# 执行策略
+execution:
+  # 零轮询模式
+  zero_polling: true
+  
+  # 后台运行
+  background_mode: true
+  
+  # 自动推进
+  auto_advance: true
